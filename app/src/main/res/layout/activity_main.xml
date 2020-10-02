@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button_single"
+        android:layout_margin="10dp"
         android:text="Single Permission"/>
 
 
@@ -17,5 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button_multiple"
+        android:layout_margin="10dp"
         android:text="Multiple"/>
 </LinearLayout>

@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
     private val CAMERA_REQUEST_CODE = 100
+    private val MULTIPLE_PERMISSION_CODE = 200
+    private var requestPermissionList:ArrayList<String> = ArrayList()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,10 +25,45 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun init() {
         button_single.setOnClickListener(this)
+        button_multiple.setOnClickListener(this)
     }
 
-    override fun onClick(p0: View?) {
-        checkForCameraPermission()
+    override fun onClick(view: View) {
+        when(view){
+            button_single -> checkForCameraPermission()
+            button_multiple -> checkForMultiplePermission()
+
+        }
+    }
+
+    private fun checkForMultiplePermission(){
+        var permissions = arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION
+
+        )
+        for(permission in permissions){
+            if(ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_DENIED){
+                requestPermissionList.add(permission)
+            }
+            requestMultiplePermission()
+
+        }
+    }
+
+    private fun requestMultiplePermission() {
+        ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                MULTIPLE_PERMISSION_CODE
+        )
     }
 
     private fun checkForCameraPermission(){
@@ -63,6 +100,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     Toast.makeText(applicationContext, "permission granted", Toast.LENGTH_SHORT).show()
                 }
 
+            }
+            MULTIPLE_PERMISSION_CODE ->{
+                if(grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED){
+                    Toast.makeText(applicationContext, "Multiple permission denied", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(applicationContext, "Multiple permission granted", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
